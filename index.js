@@ -51,13 +51,13 @@ async function startApp() {
                 'View All Departments',
                 'View All Roles',
                 'View All Employees',
+                'View Employees by Department',
+                'View Employees by Manager',
                 'Add a Department',
                 'Add a Role',
                 'Add an Employee',
                 'Update Employee Role',
                 'Update Employee Manager',
-                'View Employees by Department',
-                'View Employees by Manager',
                 'Delete Department',
                 'Delete Role',
                 'Delete Employee',
@@ -73,6 +73,10 @@ async function startApp() {
             return viewRoles();
         case 'View All Employees':
             return viewEmployees();
+        case 'View Employees by Manager':
+            return viewEmployeesByManager();
+        case 'View Employees by Department':
+            return viewEmployeesByDepartment();
         case 'Add a Department':
             return addDepartment();
         case 'Add a Role':
@@ -83,10 +87,6 @@ async function startApp() {
             return updateEmployeeRole();
         case 'Update Employee Manager':
             return updateEmployeeManager();
-        case 'View Employees by Manager':
-            return viewEmployeesByManager();
-        case 'View Employees by Department':
-            return viewEmployeesByDepartment();
         case 'Delete Department':
             return deleteDepartment();
         case 'Delete Role':
@@ -368,9 +368,21 @@ async function viewEmployeesByManager() {
             }
         ]);
 
-        const employeesByManager = await pool.query('SELECT * FROM employee WHERE manager_id = $1', [manager_id]);
+        const employeesByManager = await pool.query(`
+            SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary,
+                COALESCE(manager.first_name || ' ' || manager.last_name, 'No Manager') AS manager
+            FROM employee e
+            LEFT JOIN role ON e.role_id = role.id
+            LEFT JOIN department ON role.department_id = department.id
+            LEFT JOIN employee manager ON e.manager_id = manager.id
+            WHERE e.manager_id = $1;
+        `, [manager_id]);
 
-        console.table(employeesByManager.rows);
+        if (employeesByManager.rows.length === 0) {
+            console.log('Employee does not have a manager assigned.');
+        } else {
+            console.table(employeesByManager.rows);
+        }
         startApp();
     } catch (err) {
         console.error('Error viewing employee by manager:', err);
