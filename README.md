@@ -25,7 +25,7 @@ The Employee Tracker is a command-line application used to manage a employee dat
 
 3. In the terminal, run the following command to start the development server:
     ```bash
-<!-- npm run start:dev -->
+        node index.js
     ```
 
 ## Usage Information
