@@ -47,7 +47,7 @@ The Employee Tracker is a command-line application used to manage employee data 
 2. Press enter to select action.
 3. Proceed through prompts in terminal to complete each action.
 
-[Application Demo]()
+[Application Demo](https://drive.google.com/file/d/1ZANDuM63VysqaXSIKRTxrMJzU9VCT4Rs/view)
 
 ## License
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
